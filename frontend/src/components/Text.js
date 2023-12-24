@@ -10,6 +10,7 @@ export default function Texts({
   onClick,
   isSelected,
   onSelect,
+  draggable
 }) {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
@@ -74,7 +75,7 @@ export default function Texts({
         //width={data.width}
         //height={data.height}
         y={data.y}
-        draggable
+        draggable={draggable?false:true}
         fill={data.color}
         
       />

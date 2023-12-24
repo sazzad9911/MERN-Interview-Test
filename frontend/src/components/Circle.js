@@ -10,6 +10,7 @@ export default function Circles({
   onClick,
   isSelected,
   onSelect,
+  draggable
 }) {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
@@ -57,7 +58,7 @@ export default function Circles({
         }}
         x={data.x}
         y={data.y}
-        draggable
+        draggable={draggable?false:true}
         width={data.width}
         height={data.height}
         fill={data.color}

@@ -10,6 +10,7 @@ export default function Curve({
   onClick,
   isSelected,
   onSelect,
+  draggable
 }) {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
@@ -77,7 +78,7 @@ export default function Curve({
         //width={data.width}
         //height={data.height}
         y={data.y}
-        draggable
+        draggable={draggable?false:true}
         stroke={data.color}
         
       />

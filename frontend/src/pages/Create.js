@@ -9,12 +9,17 @@ import Triangle from "../components/Triangle";
 import Curve from "../components/Curve";
 import Lines from "../components/Lines";
 import Texts from "../components/Text";
+import { createDrawing } from "../api";
+import dataURLtoFile from "../functions/dataURItoBlob";
+import { toast } from "react-toastify";
+import { useNavigate, useNavigation } from "react-router-dom";
 
 export default function Create() {
   const [data, setData] = useState([]);
   const [selectedId, selectShape] = React.useState(null);
   const [isWriting, setIsWriting] = useState(false);
   const stageRef = React.useRef(null);
+  const navigate=useNavigate()
   const rectangle = {
     id: randomId(),
     height: 100,
@@ -72,9 +77,19 @@ export default function Create() {
     text: "This is the demo text",
     fontSize: 15,
   };
-  const handleExport = () => {
-    const uri = stageRef?.current.toImage();
-    console.log(uri);
+  const handleExport = async() => {
+    try {
+      
+      const uri = stageRef?.current.toDataURL();
+      //downloadURI(uri,"dsfs.png")
+      //console.log(uri);
+      //console.log(dataURItoBlob(uri));
+      await createDrawing(JSON.stringify(data),dataURLtoFile(uri,`${randomId()}.png`))
+      toast("Success")
+      navigate("/")
+    } catch (error) {
+      toast(error.response.data.error);
+    }
   };
 
   const checkDeselect = (e) => {

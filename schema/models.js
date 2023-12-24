@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { v1 } from "uuid";
 
 const model = new Schema({
-  _id: Schema.Types.UUID,
+  //_id: mongoose.Types.UUID,
+  id: String,
   x: { type: Number, default: 100 },
   y: { type: Number, default: 100 },
   isDragging: { type: Boolean, default: false },
@@ -16,11 +18,12 @@ const model = new Schema({
 });
 
 const drawings = new Schema({
-  _id: Schema.Types.UUID,
-  title: {type:String,unique:true},
+  //_id: mongoose.Types.UUID,
+  title: { type: String, unique: true,default:v1() },
   updateAt: { type: Date, default: Date.now },
   models: [model],
   date: { type: Date, default: Date.now },
+  thumbnail: String,
 });
 
 export { drawings };

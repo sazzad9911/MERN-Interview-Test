@@ -10,6 +10,7 @@ export default function Rectangle({
   onClick,
   isSelected,
   onSelect,
+  draggable
 }) {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
@@ -58,7 +59,7 @@ export default function Rectangle({
         x={data.x}
         y={data.y}
         width={data.width}
-        draggable
+        draggable={draggable?false:true}
         height={data.height}
         fill={data.color}
       />
