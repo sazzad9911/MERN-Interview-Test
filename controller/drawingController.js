@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { Drawings } from "../middleware/mongoConnection.js";
+import { Drawings } from "../functions/mongoConnection.js";
 
 export const createDrawing = async (req, res) => {
   const { models } = req.body;

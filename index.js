@@ -1,5 +1,5 @@
 import express from "express";
-import { mongoConnection } from "./middleware/mongoConnection.js";
+import { mongoConnection } from "./functions/mongoConnection.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
