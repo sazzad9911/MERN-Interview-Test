@@ -11,7 +11,7 @@ export default function Card({ data,onDelete }) {
       <div className="border border-blue-300">
         <img
           className="w-[150px] h-[50px]"
-          src={`${url}${data.thumbnail}`}
+          src={`${data.thumbnail}`}
           alt="pic"
         />
       </div>

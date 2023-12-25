@@ -13,6 +13,7 @@ import { createDrawing } from "../api";
 import dataURLtoFile from "../functions/dataURItoBlob";
 import { toast } from "react-toastify";
 import { useNavigate, useNavigation } from "react-router-dom";
+import uploadToServer from "../functions/uploadToServer";
 
 export default function Create() {
   const [data, setData] = useState([]);
@@ -20,6 +21,7 @@ export default function Create() {
   const [isWriting, setIsWriting] = useState(false);
   const stageRef = React.useRef(null);
   const navigate=useNavigate()
+  const [loader,setLoader]=useState(false)
   const rectangle = {
     id: randomId(),
     height: 100,
@@ -79,15 +81,20 @@ export default function Create() {
   };
   const handleExport = async() => {
     try {
-      
+      setLoader(true)
       const uri = stageRef?.current.toDataURL();
       //downloadURI(uri,"dsfs.png")
       //console.log(uri);
       //console.log(dataURItoBlob(uri));
-      await createDrawing(JSON.stringify(data),dataURLtoFile(uri,`${randomId()}.png`))
+      const {path} = await uploadToServer(
+        dataURLtoFile(uri, `${randomId()}.png`)
+      );
+      await createDrawing(data,path)
+      setLoader(false)
       toast("Success")
       navigate("/")
     } catch (error) {
+      setLoader(false)
       toast(error.response.data.error);
     }
   };
@@ -99,6 +106,13 @@ export default function Create() {
       selectShape(null);
     }
   };
+  if(loader){
+     return (
+      <div className="flex w-full h-full justify-center items-center">
+        <div className=" text-lg">Loading...</div>
+      </div>
+    );
+  }
   return (
     <div className="h-full w-full">
       <SideBar

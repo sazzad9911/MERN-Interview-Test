@@ -13,13 +13,15 @@ import { createDrawing, getDrawingsById, updateDrawing } from "../api";
 import dataURLtoFile from "../functions/dataURItoBlob";
 import { toast } from "react-toastify";
 import { useNavigate, useNavigation, useParams } from "react-router-dom";
+import uploadToServer from "../functions/uploadToServer";
 
 export default function Edit() {
   const [data, setData] = useState();
   const [selectedId, selectShape] = React.useState(null);
   const [isWriting, setIsWriting] = useState(false);
   const stageRef = React.useRef(null);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+  const [loader,setLoader]=useState(false)
   const { id } = useParams();
   useEffect(() => {
     getDrawingsById(id).then((res) => {
@@ -83,17 +85,22 @@ export default function Edit() {
     text: "This is the demo text",
     fontSize: 15,
   };
-  const handleExport = async() => {
+  const handleExport = async () => {
     try {
-      
+      setLoader(true)
       const uri = stageRef?.current.toDataURL();
       //downloadURI(uri,"dsfs.png")
       //console.log(uri);
       //console.log(dataURItoBlob(uri));
-      await updateDrawing(JSON.stringify(data),dataURLtoFile(uri,`${randomId()}.png`),id)
-      toast("Success")
-      navigate("/")
+      const {path} = await uploadToServer(
+        dataURLtoFile(uri, `${randomId()}.png`)
+      );
+      await updateDrawing(data, path, id);
+      setLoader(false)
+      toast("Success");
+      navigate("/");
     } catch (error) {
+      setLoader(false)
       toast(error.response.data.error);
     }
   };
@@ -105,7 +112,7 @@ export default function Edit() {
       selectShape(null);
     }
   };
-  if(!data) {
+  if (!data) {
     return (
       <div className="flex w-full h-full justify-center items-center">
         <div className=" text-lg">Loading...</div>
@@ -131,7 +138,7 @@ export default function Edit() {
           }
         }}
         onSave={handleExport}
-        isWriting={isWriting&&selectedId?true:false}
+        isWriting={isWriting && selectedId ? true : false}
         onWriteEnd={(e) => {
           const val = data.find((r) => r.id === selectedId);
           const i = data.indexOf(val);
@@ -151,8 +158,7 @@ export default function Edit() {
           width={window.innerWidth - 10}
           height={window.innerHeight - 140}
           onMouseDown={checkDeselect}
-          onTouchStart={checkDeselect}
-        >
+          onTouchStart={checkDeselect}>
           <Layer>
             {data.map((d, i) =>
               d.type === "rectangle" ? (

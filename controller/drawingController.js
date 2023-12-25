@@ -4,18 +4,17 @@ import uploadImage from "../functions/uploadImage.js";
 
 export const createDrawing = async (req, res) => {
   try {
-    const { models } = req.body;
-    const m = JSON.parse(models);
-    if (!Array.isArray(m)) {
+    const { models, thumbnail } = req.body;
+
+    if (!Array.isArray(models) || !thumbnail) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Invalid models" });
     }
-    
-    const { path } = await uploadImage(req, res);
+
     const drawing = await new Drawings({
-      models: m,
-      thumbnail: path,
+      models: models,
+      thumbnail: thumbnail,
     }).save();
     return res.status(StatusCodes.OK).json(drawing);
   } catch (error) {
@@ -23,25 +22,25 @@ export const createDrawing = async (req, res) => {
   }
 };
 export const updateDrawing = async (req, res) => {
-  const { models, id } = req.body;
-  const m = JSON.parse(models);
-  if (!Array.isArray(m)) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "Invalid models" });
-  }
-  if (!id) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid id" });
-  }
   try {
-    const { path } = await uploadImage(req, res);
+    const { models, id, thumbnail } = req.body;
+
+    if (!Array.isArray(models) || !thumbnail) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid models" });
+    }
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid id" });
+    }
+    
     const drawing = await Drawings.updateOne(
       { _id: id },
       {
         updateAt: new Date(),
-        models: m,
-        thumbnail: path,
-      },
+        models: models,
+        thumbnail: thumbnail,
+      }
     );
     res.status(StatusCodes.OK).json(drawing);
   } catch (error) {
@@ -50,7 +49,7 @@ export const updateDrawing = async (req, res) => {
 };
 export const getDrawings = async (req, res) => {
   try {
-    const drawing = await Drawings.find().sort({updateAt:-1})
+    const drawing = await Drawings.find().sort({ updateAt: -1 });
 
     res.status(StatusCodes.OK).json(drawing);
   } catch (error) {
