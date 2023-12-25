@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const url = "http://localhost:3001";
+export const url = "https://important-tuna-kit.cyclic.app";
 
 export const createDrawing = async (models, image) => {
   const form = new FormData();
