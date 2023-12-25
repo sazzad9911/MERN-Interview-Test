@@ -22,10 +22,8 @@ export default function StepBar({
   return (
     <div className="absolute h-[calc(100vh-40px)] top-10 left-0 flex items-center">
       <div
-        className={`grid ${
-          text ? "grid-rows-5" : "grid-rows-4"
-        } gap-2 px-1 py-2 bg-blue-300 rounded-md`}
-      >
+        className={`grid grid-rows-4
+         gap-2 px-1 py-2 bg-blue-300 rounded-md`}>
         <Menu
           placement={"right"}
           //type={type}
@@ -66,16 +64,6 @@ export default function StepBar({
           icon={<MdDelete />}
           title={"Delete"}
         />
-        {text && (
-          <Menu
-            placement={"right"}
-            //type={type}
-            value={"text"}
-            onClick={onEdit}
-            icon={<FaEdit />}
-            title={"Edit"}
-          />
-        )}
       </div>
     </div>
   );

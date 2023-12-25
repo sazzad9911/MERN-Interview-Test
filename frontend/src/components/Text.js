@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Circle, Line, Rect, Text, Transformer } from "react-konva";
 import { setNewValues } from "../functions/basics";
+import { EditableTextInput } from "./EditableTextInput";
+const RETURN_KEY = 13;
+const ESCAPE_KEY = 27;
 
 export default function Texts({
   data,
@@ -10,27 +13,46 @@ export default function Texts({
   onClick,
   isSelected,
   onSelect,
-  draggable
+  draggable,
 }) {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
+  const [isEditable, setIsEditable] = useState(false);
 
+  function handleEscapeKeys(e) {
+    if ((e.keyCode === RETURN_KEY && !e.shiftKey) || e.keyCode === ESCAPE_KEY) {
+      setIsEditable(false);
+    }
+  }
   React.useEffect(() => {
     if (isSelected) {
       // we need to attach transformer manually
       trRef.current.nodes([shapeRef.current]);
       trRef.current.getLayer().batchDraw();
     }
+    if (!isSelected) {
+      setIsEditable(false);
+    }
   }, [isSelected]);
-  //   useEffect(()=>{
-  //     let p1=0*data.width;
-  //     let p2=0*data.height;
-  //     let p3=100*data.width;
-  //     let p4=0*data.height;
-  //     let p5=100*data.width;
-  //     let p6=100*data.height;
-  //     setPoint([p1,p2,p3,p4,p5,p6])
-  //   },[data.width,data.height])
+
+  if (isEditable && !draggable) {
+    return (
+      <EditableTextInput
+        onChange={(e) => {
+          onChange({
+            ...data,
+            text: e.target.value,
+          });
+        }}
+        onKeyDown={handleEscapeKeys}
+        value={data.text}
+        x={data.x}
+        fontSize={data.fontSize}
+        y={data.y}
+      />
+    );
+  }
+
   return (
     <React.Fragment>
       <Text
@@ -57,29 +79,38 @@ export default function Texts({
           const scaleY = node.scaleY();
           node.scaleX(1);
           node.scaleY(1);
-         
-          
+
           onChange({
             ...data,
             x: node.x(),
             y: node.y(),
-            fontSize: node.fontSize()*scaleX,
+            fontSize: node.fontSize() * scaleX,
           });
+        }}
+        onDblClick={() => {
+          setIsEditable((v) => !v);
+        }}
+        onDblTap={() => {
+          setIsEditable((v) => !v);
         }}
         points={data.points}
         x={data.x}
         strokeWidth={0}
         text={data.text}
         fontSize={data.fontSize}
-        
         //width={data.width}
         //height={data.height}
         y={data.y}
-        draggable={draggable?false:true}
+        draggable={draggable ? false : true}
         fill={data.color}
-        
       />
-      {isSelected && <Transformer ref={trRef} flipEnabled={false} />}
+      {isSelected && (
+        <Transformer
+          enabledAnchors={["top-left", "bottom-right"]}
+          ref={trRef}
+          flipEnabled={false}
+        />
+      )}
     </React.Fragment>
   );
 }
