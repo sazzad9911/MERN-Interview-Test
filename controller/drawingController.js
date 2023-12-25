@@ -50,7 +50,7 @@ export const updateDrawing = async (req, res) => {
 };
 export const getDrawings = async (req, res) => {
   try {
-    const drawing = await Drawings.find();
+    const drawing = await Drawings.find().sort({updateAt:-1})
 
     res.status(StatusCodes.OK).json(drawing);
   } catch (error) {
